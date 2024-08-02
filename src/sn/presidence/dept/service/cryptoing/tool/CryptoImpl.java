@@ -60,7 +60,8 @@ public class CryptoImpl implements ICrypto {
 
     @Override
     public byte[] hextoBytes(String chaine) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+       // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/
+       return null;
     }
 
     @Override
