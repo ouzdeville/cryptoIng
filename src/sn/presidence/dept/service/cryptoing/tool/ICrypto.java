@@ -24,6 +24,8 @@ public interface ICrypto {
     public final byte[] salt = "MO5-°HG3YEH255367gdsjhgd".getBytes();
     //Faire un programme pour recupérer un seed avec une bonne entropie
 
+    
+    
     /**
      * Recupérer des coordonnees différentes de la souris de l'utilisateur pour
      * avoir 256 bits aléatoires.
@@ -42,6 +44,15 @@ public interface ICrypto {
 
     public SecretKey generatePBEKey(String password);
 
+    public String bytesToHex(byte[] tab);
+
+    public byte[] hextoBytes(String chaine);
+
+    public boolean saveHexKey(SecretKey k, String chemin, String password);
+
+    public SecretKey loadHexKey(String chemin, String password);
+
+    
     /**
      *
      * @param k : la clé à stocker
@@ -64,18 +75,11 @@ public interface ICrypto {
 
     public SecretKey loadKey(String chemin);
 
-    public boolean encrypt(SecretKey k, String fileToencrypt, String encreptedFile);
+    public boolean cipherProcess(SecretKey k, String fileToencrypt, String encryptedFile, int mode);
+    
+    public boolean cipherProcessFolder(SecretKey k, String FolderToencrypt, String encryptedFolder, int mode);
 
-    public boolean decrypt(SecretKey k, String fileToencrypt, String encreptedFile);
-
-    public String bytesToHex(byte[] tab);
-
-    public byte[] hextoBytes(String chaine);
-
-    public boolean saveHexKey(SecretKey k, String chemin, String password);
-
-    public SecretKey loadHexKey(String chemin, String password);
-
+    
     public boolean HybridEnCrypt(PublicKey k, String fileToencrypt, String encreptedFile);
 
     public boolean HybridDenCrypt(PrivateKey k, String fileToencrypt, String encreptedFile);
