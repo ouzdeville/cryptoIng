@@ -19,7 +19,7 @@ public class Main {
         ICrypto crypto=new CryptoImpl();
         SecretKey k = crypto.generateKey();
         System.out.println(k.getEncoded().length*8);
-       // String keyString=crypto.bytesToHex(tab)
+        String keyString=crypto.bytesToHex(k.getEncoded());
         crypto.bytesToHex(k.getEncoded());
         
          byte[] tab = crypto.generateSeedTrullyRandom();

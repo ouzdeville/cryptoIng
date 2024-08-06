@@ -35,8 +35,7 @@ public interface ICrypto {
      */
     public byte[] generateSeedTrullyRandom();
        
-                
-
+      
     /**
      * la méthode generateKey permet de générer une clé à partir des paramètres
      * spécifiés.
