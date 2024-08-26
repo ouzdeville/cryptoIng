@@ -7,6 +7,7 @@ package sn.presidence.dept.service.cryptoing.tool;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 /**
@@ -25,7 +26,7 @@ public interface ICrypto {
     //Faire un programme pour recupérer un seed avec une bonne entropie
 
     
-    
+   
     /**
      * Recupérer des coordonnees différentes de la souris de l'utilisateur pour
      * avoir 256 bits aléatoires.
@@ -33,7 +34,8 @@ public interface ICrypto {
      * @return
      */
     public byte[] generateSeedTrullyRandom();
-
+       
+      
     /**
      * la méthode generateKey permet de générer une clé à partir des paramètres
      * spécifiés.
@@ -42,6 +44,7 @@ public interface ICrypto {
      */
     public SecretKey generateKey();
 
+    
     public SecretKey generatePBEKey(String password);
 
     public String bytesToHex(byte[] tab);
