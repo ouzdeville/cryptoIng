@@ -4,6 +4,8 @@
  */
 package cryptoing;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import javax.crypto.SecretKey;
 import sn.presidence.dept.service.cryptoing.tool.CryptoImpl;
 import sn.presidence.dept.service.cryptoing.tool.ICrypto;
@@ -16,12 +18,11 @@ public class Main {
     public static void main(String[] args) {
         ICrypto crypto=new CryptoImpl();
         SecretKey k = crypto.generateKey();
-        System.out.println("");
-        String keyString=crypto.bytesToHex(k.getEncoded());
-        System.out.println(keyString);
-        SecretKey k1 = crypto.generateKey();
-        String keyString1=crypto.bytesToHex(k1.getEncoded());
-        System.out.println("");
-        System.out.println(keyString1);
+        crypto.saveHexKey(k, "keySecret.ing", "123456");
+        
+        SecretKey k1 = crypto.loadHexKey("keySecret.ing", "123456");
+        System.out.println(crypto.bytesToHex(k.getEncoded()));
+        System.out.println(crypto.bytesToHex(k1.getEncoded()));
+        
     }
 }
