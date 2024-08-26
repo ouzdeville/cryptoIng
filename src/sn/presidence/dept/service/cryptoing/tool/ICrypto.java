@@ -20,7 +20,7 @@ public interface ICrypto {
     public static final int keysize = 256;
     public static final String transform = "AES/CBC/PKCS5Padding";
     public static final String iv = "16carat_res01251";
-    public final String kdf = "PBKDF2WithHmacSHA1";
+    public final String kdf = "PBKDF2WithHmacSHA256";
     public final int iteration = 1000;
     public final byte[] salt = "MO5-°HG3YEH255367gdsjhgd".getBytes();
     //Faire un programme pour recupérer un seed avec une bonne entropie
