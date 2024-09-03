@@ -9,6 +9,8 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -23,11 +25,14 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
@@ -117,7 +122,7 @@ public class CryptoImpl implements ICrypto {
         //on appelle Transforme le mot de passe en tableau de Char
         char[] password = mdp.toCharArray();
         PBEKeySpec pbeSpec = new PBEKeySpec(password, salt, iteration, keysize);
-        
+
         //on vide le tableau de char password
         mdp = null;
         try {
@@ -127,14 +132,14 @@ public class CryptoImpl implements ICrypto {
             SecretKey k = skf.generateSecret(pbeSpec);
             // comme le nom de l'algo nest pas encore donne alors on construit une nouvelle cle
             byte[] contenu = k.getEncoded();
-            clepbe= new SecretKeySpec(contenu, algo);
-            
+            clepbe = new SecretKeySpec(contenu, algo);
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        return  clepbe;
+        return clepbe;
 
     }
 
@@ -156,7 +161,7 @@ public class CryptoImpl implements ICrypto {
             // contruction de cle avec mot de pass
             SecretKey lacle = generatePBEKey(password);
             // creation de Cipher en mode Encryption
-            Cipher chiffreur=Cipher.getInstance(transform);
+            Cipher chiffreur = Cipher.getInstance(transform);
             // initialiser le chiffreur en mode chiffrement 
             chiffreur.init(Cipher.ENCRYPT_MODE, lacle,
                     new IvParameterSpec(iv.getBytes()));
@@ -165,27 +170,28 @@ public class CryptoImpl implements ICrypto {
             // l'encodage en HEX
             String s = this.bytesToHex(s_contenu);
             // creation de flux de sortie ver le fichier
-            FileOutputStream fos=new FileOutputStream(chemin);
+            FileOutputStream fos = new FileOutputStream(chemin);
             // Bufferiser avec PrintWriter pour avoir un flux de caracteres
-            PrintWriter pw=new PrintWriter(fos,true);
+            PrintWriter pw = new PrintWriter(fos, true);
             // ecriture dans le flux les caracteres
             pw.print(s);
             //fermeture des flux
-            pw.close();fos.close();
+            pw.close();
+            fos.close();
             return true;
         } catch (Exception ex) {
             Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
         return false;
     }
 
     @Override
     public SecretKey loadHexKey(String chemin, String password) {
-        FileInputStream fis=null;
+        FileInputStream fis = null;
         try {
-            StringBuilder sb=new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             fis = new FileInputStream(chemin);
-            Scanner sc=new Scanner(fis);
+            Scanner sc = new Scanner(fis);
             while (sc.hasNext()) {
                 String next = sc.nextLine();
                 sb.append(next);
@@ -194,7 +200,7 @@ public class CryptoImpl implements ICrypto {
             // contruction de cle avec mot de pass
             SecretKey lacle = generatePBEKey(password);
             // creation de Cipher en mode Encryption
-            Cipher chiffreur=Cipher.getInstance(transform);
+            Cipher chiffreur = Cipher.getInstance(transform);
             // initialiser le chiffreur en mode chiffrement 
             chiffreur.init(Cipher.DECRYPT_MODE, lacle,
                     new IvParameterSpec(iv.getBytes()));
@@ -203,7 +209,7 @@ public class CryptoImpl implements ICrypto {
             return new SecretKeySpec(contenu, algo);
         } catch (Exception ex) {
             Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }  finally {
+        } finally {
             try {
                 fis.close();
             } catch (IOException ex) {
@@ -238,13 +244,111 @@ public class CryptoImpl implements ICrypto {
     }
 
     @Override
-    public boolean HybridEnCrypt(PublicKey k, String fileToencrypt, String encreptedFile) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public boolean cipherProcess(SecretKey k, String fileToencrypt, String encryptedFile, int mode, boolean deleteAfter) {
+        try {
+            FileInputStream fis = new FileInputStream(fileToencrypt);
+            FileOutputStream fos = new FileOutputStream(encryptedFile);
+            Cipher chiffreur = Cipher.getInstance(transform);
+            // initialiser le chiffreur en mode chiffrement
+            chiffreur.init(mode, k,
+                    new IvParameterSpec(iv.getBytes()));
+            CipherInputStream cis = new CipherInputStream(fis, chiffreur);
+            byte[] buffer = new byte[1024 * 1024];
+            int nombrebytes = 0;
+            while ((nombrebytes = cis.read(buffer)) != -1) {
+                fos.write(buffer, 0, nombrebytes);
+            }
+            fos.close();
+            cis.close();
+            fis.close();
+            if (deleteAfter) {
+                File file = new File(fileToencrypt);
+                file.delete();
+
+            }
+            return true;
+
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     @Override
-    public boolean HybridDenCrypt(PrivateKey k, String fileToencrypt, String encreptedFile) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public boolean cipherProcessFolder(SecretKey k, String FolderToencrypt, String encryptedFolder, int mode, boolean deleteAfter) {
+        File folder = new File(FolderToencrypt);
+        File outputFolder = new File(encryptedFolder);
+        if (!outputFolder.isDirectory()) {
+            outputFolder.mkdirs();
+        }
+        if (folder.isDirectory()) {
+            File[] fils = folder.listFiles();
+            for (File f : fils) {
+                //System.out.println(f.getAbsolutePath());
+                if (f.isFile()) {
+                    String name = (mode == Cipher.ENCRYPT_MODE) ? f.getName() + ".enc" : f.getName().replace(".enc", "");
+                    String newpath = outputFolder.getAbsolutePath() + File.separator + name;
+                    if (f.getAbsolutePath().equals(newpath)) {
+                        newpath = outputFolder.getAbsolutePath() + File.separator + "Copy " + name;
+                    }
+
+                    System.out.println(newpath);
+                    cipherProcess(k, f.getAbsolutePath(), newpath, mode, deleteAfter);
+                } else if (f.isDirectory()) {
+                    cipherProcessFolder(k, f.getAbsolutePath(),
+                            outputFolder.getAbsolutePath() + File.separator + f.getName(), mode, deleteAfter);
+                    if (!f.getAbsolutePath().equals(outputFolder.getAbsolutePath() + File.separator + f.getName())) {
+                        f.delete();
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean cipherProcessFolderarallel(SecretKey k, String FolderToEncrypt, String encryptedFolder, int mode, boolean deleteAfter) {
+        File folder = new File(FolderToEncrypt);
+        File outputFolder = new File(encryptedFolder);
+
+        // Créer le dossier de sortie s'il n'existe pas
+        if (!outputFolder.isDirectory()) {
+            outputFolder.mkdirs();
+        }
+
+        // Vérifier si le dossier à chiffrer existe et est un dossier
+        if (folder.isDirectory()) {
+            // Utiliser parallelStream pour traiter les fichiers et dossiers en parallèle
+            Arrays.stream(Objects.requireNonNull(folder.listFiles()))
+                    .parallel() // Convertir le stream en parallelStream
+                    .forEach(file -> {
+                        String fileName = file.getName();
+                        String filePath = file.getAbsolutePath();
+                        String outputFilePath = outputFolder.getAbsolutePath() + File.separator;
+
+                        if (file.isFile()) {
+                            // Déterminer le nom du fichier pour le chiffrement ou le déchiffrement
+                            String newName = (mode == Cipher.ENCRYPT_MODE) ? fileName + ".enc" : fileName.replace(".enc", "");
+                            String newFilePath = outputFilePath + newName;
+
+                            // Résoudre le conflit de nom de fichier
+                            if (filePath.equals(newFilePath)) {
+                                newFilePath = outputFilePath + "Copy " + newName;
+                            }
+
+                            System.out.println(newFilePath);
+                            cipherProcess(k, filePath, newFilePath, mode, deleteAfter);
+                        } else if (file.isDirectory()) {
+                            // Traitement récursif pour les sous-dossiers
+                            cipherProcessFolder(k, filePath, outputFilePath + fileName, mode, deleteAfter);
+
+                            // Supprimer le dossier après traitement s'il ne correspond pas au dossier de sortie
+                            if (deleteAfter && !filePath.equals(outputFilePath + fileName)) {
+                                file.delete();
+                            }
+                        }
+                    });
+        }
+        return true; // Le traitement est terminé avec succès
     }
 
     @Override
@@ -258,13 +362,32 @@ public class CryptoImpl implements ICrypto {
     }
 
     @Override
-    public boolean cipherProcess(SecretKey k, String fileToencrypt, String encryptedFile, int mode) {
+    public boolean HybridEnCrypt(PublicKey k, String fileToencrypt, String encreptedFile) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public boolean cipherProcessFolder(SecretKey k, String FolderToencrypt, String encryptedFolder, int mode) {
+    public boolean HybridDenCrypt(PrivateKey k, String fileToencrypt, String encreptedFile) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private static byte[] packKeyAndIv(Key key, IvParameterSpec ivSpec) throws IOException {
+        ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+
+        bOut.write(ivSpec.getIV());
+        bOut.write(key.getEncoded());
+
+        return bOut.toByteArray();
+    }
+
+    private static Object[] unpackKeyAndIV(byte[] data) {
+        byte[] keyD = new byte[16];
+        byte[] iv = new byte[data.length - 16];
+
+        return new Object[]{
+            new SecretKeySpec(data, 16, data.length - 16, "AES"),
+            new IvParameterSpec(data, 0, 16)
+        };
     }
 
 }

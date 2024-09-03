@@ -78,9 +78,9 @@ public interface ICrypto {
 
     public SecretKey loadKey(String chemin);
 
-    public boolean cipherProcess(SecretKey k, String fileToencrypt, String encryptedFile, int mode);
+    public boolean cipherProcess(SecretKey k, String fileToencrypt, String encryptedFile, int mode, boolean deleteAfter);
     
-    public boolean cipherProcessFolder(SecretKey k, String FolderToencrypt, String encryptedFolder, int mode);
+    public boolean cipherProcessFolder(SecretKey k, String FolderToencrypt, String encryptedFolder, int mode, boolean deleteAfter);
 
     
     public boolean HybridEnCrypt(PublicKey k, String fileToencrypt, String encreptedFile);
