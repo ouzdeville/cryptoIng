@@ -41,10 +41,16 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import static sn.presidence.dept.service.cryptoing.tool.ICrypto.algo;
+import static sn.presidence.dept.service.cryptoing.tool.ICrypto.iteration;
+import static sn.presidence.dept.service.cryptoing.tool.ICrypto.kdf;
+import static sn.presidence.dept.service.cryptoing.tool.ICrypto.keysize;
+import static sn.presidence.dept.service.cryptoing.tool.ICrypto.salt;
+import static sn.presidence.dept.service.cryptoing.tool.ICrypto.transform;
 
 /**
  *
- * @author tapha
+ * @author asus
  */
 public class CryptoImpl implements ICrypto {
 
