@@ -72,7 +72,7 @@ public interface ICrypto {
     public Key loadHexKey(String chemin, String password, int type);
     public boolean saveHexKey(Key k, String chemin, String password);
     
-    public boolean HybridEnCrypt(PublicKey k, String fileToencrypt, String encreptedFile);
+    public boolean HybridEnCrypt(PublicKey k, String fileToencrypt, String encryptedFile);
 
     public boolean HybridDenCrypt(PrivateKey k, String fileToencrypt, String encreptedFile);
 

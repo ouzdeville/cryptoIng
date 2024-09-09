@@ -356,7 +356,7 @@ public class CryptoImpl implements ICrypto {
     }
 
     @Override
-    public boolean HybridEnCrypt(PublicKey k, String fileToencrypt, String encreptedFile) {
+    public boolean HybridEnCrypt(PublicKey k, String fileToencrypt, String encryptedFile) {
         try {
             SecretKey secretKey = generateKey();
             IvParameterSpec IvParam = new IvParameterSpec(iv.getBytes());
@@ -371,12 +371,22 @@ public class CryptoImpl implements ICrypto {
             FileInputStream fis=new FileInputStream(fileToencrypt);
             byte[] buffer=new byte[fis.available()];
             CipherInputStream cis=new CipherInputStream(fis, symCipher);
-            int encryptedFile = cis.read(buffer);
+            cis.read(buffer);
             String encryptedFileHex = bytesToHex(buffer);
             
+            FileOutputStream fos=new FileOutputStream(encryptedFile);
+            PrintWriter pw=new PrintWriter(fos, true);
+            pw.println("-----ENCRYPTED KEY-----");
+            pw.println(encryptedPackHex);
+            pw.println("-----END ENCRYPTED KEY-----");
             
+            pw.println("-----ENCRYPTED MESSAGE-----");
+            pw.println(encryptedFileHex);
+            pw.println("-----END ENCRYPTED MESSAGE-----");
             
-            
+            fis.close();
+            pw.close();
+            fos.close();
             return true;
         } catch (Exception ex) {
             Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
