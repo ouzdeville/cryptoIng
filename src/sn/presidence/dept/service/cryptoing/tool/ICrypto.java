@@ -5,6 +5,8 @@
  */
 package sn.presidence.dept.service.cryptoing.tool;
 
+import java.security.Key;
+import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import javax.crypto.KeyGenerator;
@@ -24,6 +26,8 @@ public interface ICrypto {
     public final int iteration = 1000;
     public final byte[] salt = "MO5-°HG3YEH255367gdsjhgd".getBytes();
     //Faire un programme pour recupérer un seed avec une bonne entropie
+    public static final String algoAsym = "RSA";
+    public static final int keysizeAsym = 2048;
 
     
    
@@ -51,44 +55,26 @@ public interface ICrypto {
 
     public byte[] hextoBytes(String chaine);
 
-    public boolean saveHexKey(SecretKey k, String chemin, String password);
-
-    public SecretKey loadHexKey(String chemin, String password);
+    
 
     
-    /**
-     *
-     * @param k : la clé à stocker
-     * @param chemin : le chemin du fichier qui doit stocker la clé
-     * @param password : le mot qui permettra de chiffrer la clé avant stockage.
-     * @return un bloolean pour savoir si reussi ou pas
-     */
-    public boolean saveKey(SecretKey k, String chemin, String password);
-
-    public boolean saveKey(SecretKey k, String chemin);
-
-    /**
-     * Pour charger la clé depuis un fichier
-     *
-     * @param chemin : le chemin du fichier qui contient la clé à charger
-     * @param password : le mot de passe pour déchiffrer la clé
-     * @return la clé retrouvée
-     */
-    public SecretKey loadKey(String chemin, String password);
-
-    public SecretKey loadKey(String chemin);
+    
+    
 
     public boolean cipherProcess(SecretKey k, String fileToencrypt, String encryptedFile, int mode, boolean deleteAfter);
     
     public boolean cipherProcessFolder(SecretKey k, String FolderToencrypt, String encryptedFolder, int mode, boolean deleteAfter);
 
     
+    public KeyPair generateKeyPair(byte [] seed);
+
+    public Key loadHexKey(String chemin, String password, int type);
+    public boolean saveHexKey(Key k, String chemin, String password);
+    
     public boolean HybridEnCrypt(PublicKey k, String fileToencrypt, String encreptedFile);
 
     public boolean HybridDenCrypt(PrivateKey k, String fileToencrypt, String encreptedFile);
 
-    public boolean savePrivateKey(PrivateKey k, String chemin, String password);
-
-    public PrivateKey loadPriveKey(String chemin, String password);
+   
 
 }

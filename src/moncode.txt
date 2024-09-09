@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sn.presidence.dept.service.cryptoing.tool;
+
 
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -21,15 +21,12 @@ import java.io.PrintWriter;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
@@ -58,9 +55,7 @@ import static sn.presidence.dept.service.cryptoing.tool.ICrypto.transform;
  * @author asus
  */
 public class CryptoImpl implements ICrypto {
-    public static final int SECRET_KEY=0;
-    public static final int PRIVATE_KEY=1;
-    public static final int PUBLIC_KEY=2;
+
     @Override
     public byte[] generateSeedTrullyRandom() {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -97,7 +92,38 @@ public class CryptoImpl implements ICrypto {
         return null;
     }
 
-   
+    @Override
+    public boolean saveKey(Key k, String chemin) {
+        try {
+            //prepation du fichier en ecriture
+            FileOutputStream fos = new FileOutputStream(chemin);
+            //creation dun oos pour ecrire l'objet k directement
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(k);
+            oos.flush();
+            oos.close();
+            fos.close();
+            return true;
+
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    @Override
+    public SecretKey loadKey(String chemin) {
+        try {
+            FileInputStream fis = new FileInputStream(chemin);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            return (SecretKey) ois.readObject();
+
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     @Override
     public SecretKey generatePBEKey(String mdp) {
         SecretKey clepbe = null;
@@ -125,9 +151,82 @@ public class CryptoImpl implements ICrypto {
 
     }
 
+    @Override
+    public boolean saveKey(Key k, String chemin, String password) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
-  
-   
+    @Override
+    public SecretKey loadKey(String chemin, String password) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean saveHexKey(Key k, String chemin, String password) {
+        try {
+            // le contenu de la cle
+           // byte[] contenu = k.getEncoded();
+            // contruction de cle avec mot de pass
+            SecretKey lacle = generatePBEKey(password);
+            // creation de Cipher en mode Encryption
+            Cipher chiffreur = Cipher.getInstance(transform);
+            // initialiser le chiffreur en mode chiffrement 
+            chiffreur.init(Cipher.ENCRYPT_MODE, lacle,
+                    new IvParameterSpec(iv.getBytes()));
+            // chiffrement
+            byte[] s_contenu = chiffreur.doFinal(k.getEncoded());
+            // l'encodage en HEX
+            String s = this.bytesToHex(s_contenu);
+            // creation de flux de sortie ver le fichier
+            FileOutputStream fos = new FileOutputStream(chemin);
+            // Bufferiser avec PrintWriter pour avoir un flux de caracteres
+            PrintWriter pw = new PrintWriter(fos, true);
+            // ecriture dans le flux les caracteres
+            pw.print(s);
+            //fermeture des flux
+            pw.close();
+            fos.close();
+            return true;
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    @Override
+    public SecretKey loadHexKey(String chemin, String password) {
+        FileInputStream fis = null;
+        try {
+            StringBuilder sb = new StringBuilder();
+            fis = new FileInputStream(chemin);
+            Scanner sc = new Scanner(fis);
+            while (sc.hasNext()) {
+                String next = sc.nextLine();
+                sb.append(next);
+            }
+            byte[] s_contenu = hextoBytes(sb.toString());
+            // contruction de cle avec mot de pass
+            SecretKey lacle = generatePBEKey(password);
+            // creation de Cipher en mode Encryption
+            Cipher chiffreur = Cipher.getInstance(transform);
+            // initialiser le chiffreur en mode chiffrement 
+            chiffreur.init(Cipher.DECRYPT_MODE, lacle,
+                    new IvParameterSpec(iv.getBytes()));
+            // dechiffrement
+            byte[] contenu = chiffreur.doFinal(s_contenu);
+            return new SecretKeySpec(contenu, algo);
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                fis.close();
+            } catch (IOException ex) {
+                Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
+
     @Override
     public String bytesToHex(byte[] bytes) {
         char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
@@ -260,101 +359,26 @@ public class CryptoImpl implements ICrypto {
         return true; // Le traitement est terminé avec succès
     }
 
-      @Override
-    public boolean saveHexKey(Key k, String chemin, String password) {
-        try {
-            // le contenu de la cle
-            // byte[] contenu = k.getEncoded();
-            // contruction de cle avec mot de pass
-            SecretKey lacle = generatePBEKey(password);
-            // creation de Cipher en mode Encryption
-            Cipher chiffreur = Cipher.getInstance(transform);
-            // initialiser le chiffreur en mode chiffrement 
-            chiffreur.init(Cipher.ENCRYPT_MODE, lacle,
-                    new IvParameterSpec(iv.getBytes()));
-            // chiffrement
-            byte[] s_contenu = chiffreur.doFinal(k.getEncoded());
-            // l'encodage en HEX
-            String s = this.bytesToHex(s_contenu);
-            // creation de flux de sortie ver le fichier
-            FileOutputStream fos = new FileOutputStream(chemin);
-            // Bufferiser avec PrintWriter pour avoir un flux de caracteres
-            PrintWriter pw = new PrintWriter(fos, true);
-            // ecriture dans le flux les caracteres
-            pw.print(s);
-            //fermeture des flux
-            pw.close();
-            fos.close();
-            return true;
-        } catch (Exception ex) {
-            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
+    
+    
+    @Override
+    public boolean saveHexPrivateKey(PrivateKey k, String chemin, String password) {
+        return saveHexKey(k, chemin, password);
     }
-
 
     @Override
-    /**
-     * SecretKeySpec pour les cles secrete type=0 PKCS8EncodedKeySpec pour les
-     * cles privee type=1 X509EncodedKeySpec pour les publiques type=2
-     *
-     */
-    public Key loadHexKey(String chemin, String password, int type) {
-        FileInputStream fis = null;
-        try {
-            StringBuilder sb = new StringBuilder();
-            fis = new FileInputStream(chemin);
-            Scanner sc = new Scanner(fis);
-            while (sc.hasNext()) {
-                String next = sc.nextLine();
-                sb.append(next);
-            }
-            byte[] s_contenu = hextoBytes(sb.toString());
-            // contruction de cle avec mot de pass
-            SecretKey lacle = generatePBEKey(password);
-            // creation de Cipher en mode Encryption
-            Cipher chiffreur = Cipher.getInstance(transform);
-            // initialiser le chiffreur en mode chiffrement 
-            chiffreur.init(Cipher.DECRYPT_MODE, lacle,
-                    new IvParameterSpec(iv.getBytes()));
-            // dechiffrement
-            byte[] contenu = chiffreur.doFinal(s_contenu);
-
-            switch (type) {
-                case SECRET_KEY:
-                    return new SecretKeySpec(contenu, algo);
-                case PRIVATE_KEY:
-                {
-                    PKCS8EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(contenu, algoAsym);
-                    KeyFactory kf = KeyFactory.getInstance(algoAsym);
-                    return kf.generatePrivate(privSpec);
-                }
-                case PUBLIC_KEY:
-                {
-                    X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(contenu, algoAsym);
-                    KeyFactory kf = KeyFactory.getInstance(algoAsym);
-                    return kf.generatePublic(pubSpec);
-                }
-                default:
-                {
-                    X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(contenu, algoAsym);
-                    KeyFactory kf = KeyFactory.getInstance(algoAsym);
-                    return kf.generatePublic(pubSpec);
-                }
-            }
-
-        } catch (Exception ex) {
-            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                fis.close();
-            } catch (IOException ex) {
-                Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return null;
+    public PrivateKey loadHexPriveKey(String chemin, String password) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
     @Override
     public boolean HybridEnCrypt(PublicKey k, String fileToencrypt, String encreptedFile) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -375,23 +399,33 @@ public class CryptoImpl implements ICrypto {
     }
 
     private static Object[] unpackKeyAndIV(byte[] data) {
-        byte[] keyD = new byte[keysize / 8];
+        byte[] keyD = new byte[keysize/8];
         byte[] iv = new byte[data.length - keyD.length];
 
         return new Object[]{
-            new SecretKeySpec(data, iv.length, keyD.length, algo),
+            new SecretKeySpec(data, iv.length, keyD.length,algo),
             new IvParameterSpec(data, 0, iv.length)
         };
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     @Override
     public KeyPair generateKeyPair(byte[] seed) {
         try {
-            KeyPairGenerator kpgen = KeyPairGenerator.getInstance(algoAsym);
-            SecureRandom random = new SecureRandom(seed);
-            kpgen.initialize(keysizeAsym, random);
+            KeyPairGenerator kpgen=KeyPairGenerator.getInstance(algoAsym);
+            SecureRandom random=new SecureRandom(seed);
+            kpgen.initialize(keysizeAsym,random);
             return kpgen.genKeyPair();
-
+           
         } catch (Exception ex) {
             Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -399,3 +433,4 @@ public class CryptoImpl implements ICrypto {
     }
 
 }
+
