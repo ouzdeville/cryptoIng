@@ -357,7 +357,31 @@ public class CryptoImpl implements ICrypto {
 
     @Override
     public boolean HybridEnCrypt(PublicKey k, String fileToencrypt, String encreptedFile) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            SecretKey secretKey = generateKey();
+            IvParameterSpec IvParam = new IvParameterSpec(iv.getBytes());
+            byte[] keypack = packKeyAndIv(secretKey, IvParam);
+            Cipher pubCipher=Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+            pubCipher.init(Cipher.ENCRYPT_MODE, k);
+            byte[] encryptedPack = pubCipher.doFinal(keypack);
+            String encryptedPackHex = bytesToHex(encryptedPack);
+            
+            Cipher symCipher=Cipher.getInstance(transform);
+            symCipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParam);
+            FileInputStream fis=new FileInputStream(fileToencrypt);
+            byte[] buffer=new byte[fis.available()];
+            CipherInputStream cis=new CipherInputStream(fis, symCipher);
+            int encryptedFile = cis.read(buffer);
+            String encryptedFileHex = bytesToHex(buffer);
+            
+            
+            
+            
+            return true;
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     @Override

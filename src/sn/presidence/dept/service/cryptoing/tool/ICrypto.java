@@ -28,6 +28,7 @@ public interface ICrypto {
     //Faire un programme pour recupérer un seed avec une bonne entropie
     public static final String algoAsym = "RSA";
     public static final int keysizeAsym = 2048;
+    public static final String transformAsym = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding";
 
     
    

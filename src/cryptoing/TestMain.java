@@ -24,6 +24,7 @@ public class TestMain {
         crypto.saveHexKey(kpair.getPublic(), "pub.key", "123456");
         PublicKey k = (PublicKey) crypto.loadHexKey("pub.key", "123456", CryptoImpl.PUBLIC_KEY);
         System.out.println(k);
+        System.out.println(kpair.getPublic());
     }
 
 }
