@@ -74,7 +74,7 @@ public interface ICrypto {
     
     public boolean HybridEnCrypt(PublicKey k, String fileToencrypt, String encryptedFile);
 
-    public boolean HybridDenCrypt(PrivateKey k, String fileToencrypt, String encreptedFile);
+    public boolean HybridDeCrypt(PrivateKey k, String fileToencrypt, String encreptedFile);
 
    
 

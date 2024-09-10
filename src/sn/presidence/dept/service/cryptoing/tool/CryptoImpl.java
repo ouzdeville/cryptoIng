@@ -8,12 +8,14 @@ package sn.presidence.dept.service.cryptoing.tool;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -38,6 +40,7 @@ import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
@@ -359,20 +362,36 @@ public class CryptoImpl implements ICrypto {
     public boolean HybridEnCrypt(PublicKey k, String fileToencrypt, String encryptedFile) {
         try {
             SecretKey secretKey = generateKey();
+            
+            System.out.println("Secret Key:");
+            System.out.println(bytesToHex(secretKey.getEncoded()));
             IvParameterSpec IvParam = new IvParameterSpec(iv.getBytes());
+            System.out.println("IV:");
+            System.out.println(bytesToHex(IvParam.getIV()));
             byte[] keypack = packKeyAndIv(secretKey, IvParam);
-            Cipher pubCipher=Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+            Cipher pubCipher=Cipher.getInstance("RSA");
             pubCipher.init(Cipher.ENCRYPT_MODE, k);
             byte[] encryptedPack = pubCipher.doFinal(keypack);
             String encryptedPackHex = bytesToHex(encryptedPack);
             
+            //chiffrement symetrique
             Cipher symCipher=Cipher.getInstance(transform);
             symCipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParam);
             FileInputStream fis=new FileInputStream(fileToencrypt);
-            byte[] buffer=new byte[fis.available()];
+            
+            System.out.println("TextZise:"+fis.available());
             CipherInputStream cis=new CipherInputStream(fis, symCipher);
-            cis.read(buffer);
-            String encryptedFileHex = bytesToHex(buffer);
+            
+            byte[] buffer = new byte[1024 * 1024];
+            byte[] buffer1 = new byte[0];
+            int nombrebytes = 0;
+            while ((nombrebytes = cis.read(buffer)) != -1) {
+                buffer1=concat(buffer1, buffer, nombrebytes);
+            }
+            
+            String encryptedFileHex = bytesToHex(buffer1);
+            System.out.println("Secret Message:");
+            System.out.println(encryptedFileHex);
             
             FileOutputStream fos=new FileOutputStream(encryptedFile);
             PrintWriter pw=new PrintWriter(fos, true);
@@ -395,8 +414,52 @@ public class CryptoImpl implements ICrypto {
     }
 
     @Override
-    public boolean HybridDenCrypt(PrivateKey k, String fileToencrypt, String encreptedFile) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public boolean HybridDeCrypt(PrivateKey k, String fileTodecrypt, String decryptedFile) {
+        try {
+            //FileInputStream fis=new FileInputStream(fileTodecrypt);
+            FileReader fr=new FileReader(fileTodecrypt);
+            // comme cest du text on peut utiliser BufferedReader
+            BufferedReader br=new BufferedReader(fr);
+            br.readLine();//-----ENCRYPTED KEY-----
+            String encryptedPackHex = br.readLine();
+            br.readLine();//-----END ENCRYPTED KEY-----
+            br.readLine();//-----ENCRYPTED MESSAGE-----
+            String encryptedFileHex = br.readLine();
+            System.out.println("Secret Message:");
+            System.out.println(encryptedFileHex);
+            br.close();
+            fr.close();
+            
+            //dechiffrement de la cle et IV par la cle privee
+            byte[] encryptedPack = hextoBytes(encryptedPackHex);
+            Cipher pubCipher=Cipher.getInstance("RSA");
+            pubCipher.init(Cipher.DECRYPT_MODE, k);
+            byte[] keypack = pubCipher.doFinal(encryptedPack);
+            Object[] keyAndIV = unpackKeyAndIV(keypack);
+            SecretKeySpec keySym = (SecretKeySpec) keyAndIV[0];
+            System.out.println("Secret Key:");
+            System.out.println(bytesToHex(keySym.getEncoded()));
+            IvParameterSpec ivParam=(IvParameterSpec) keyAndIV[1];
+            System.out.println("IV:");
+            System.out.println(bytesToHex(ivParam.getIV()));
+            //System.out.println(new String(ivParam.getIV()));
+            
+            // dechiffrement du document
+            byte[] encryptedFile = hextoBytes(encryptedFileHex);
+            Cipher symCipher=Cipher.getInstance(transform);
+            symCipher.init(Cipher.DECRYPT_MODE, keySym, ivParam);
+            FileOutputStream fos=new FileOutputStream(decryptedFile);
+            CipherOutputStream cos=new CipherOutputStream(fos, symCipher);
+            cos.write(encryptedFile);
+            cos.close();
+            fos.close();
+            
+            
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
     }
 
     private static byte[] packKeyAndIv(Key key, IvParameterSpec ivSpec) throws IOException {
@@ -432,4 +495,13 @@ public class CryptoImpl implements ICrypto {
         return null;
     }
 
+    
+    private static byte[] concat(byte[] a, byte[] b, int nbrLu) throws IOException {
+        ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+
+        bOut.write(a);
+        bOut.write(b,0,nbrLu);
+
+        return bOut.toByteArray();
+    }
 }
