@@ -15,6 +15,8 @@ import java.net.Socket;
 import java.util.Date;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import javax.net.ssl.SSLSocket;
+import sn.presidence.dept.service.cryptoing.tool.Client;
 import sn.presidence.dept.service.cryptoing.tool.CryptoImpl;
 import sn.presidence.dept.service.cryptoing.tool.ICrypto;
 
@@ -54,6 +56,9 @@ public class Main {
         fos.write(("//"+new Date()).getBytes());
         fos.close();
         fis.close();
+        
+        Socket socket=new Socket("127.0.0.1", 2024);
+        new Client(socket).start();
         
        
 

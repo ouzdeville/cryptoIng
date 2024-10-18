@@ -11,6 +11,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 
 /**
  *
@@ -75,6 +76,9 @@ public interface ICrypto {
     public boolean HybridEnCrypt(PublicKey k, String fileToencrypt, String encryptedFile);
 
     public boolean HybridDeCrypt(PrivateKey k, String fileToencrypt, String encreptedFile);
+    
+    public byte[] processData(byte [] claire, SecretKey secretKey, int mode, IvParameterSpec ivParam);
+    public byte[] processData(byte [] claire, Key key, int mode, IvParameterSpec ivParam);
 
    
 

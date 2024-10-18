@@ -26,6 +26,7 @@ import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -504,4 +505,53 @@ public class CryptoImpl implements ICrypto {
 
         return bOut.toByteArray();
     }
+
+    @Override
+    public byte[] processData(byte[] claire, SecretKey secretKey, int mode, IvParameterSpec ivParam) {
+        try {
+            Cipher cipher=Cipher.getInstance(transform);
+            cipher.init(mode, secretKey, ivParam);
+            return cipher.doFinal(claire);
+            
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        return null;
+        
+    }
+
+    @Override
+    public byte[] processData(byte[] claire, Key key, int mode, IvParameterSpec ivParam) {
+        try {
+            Cipher cipher=Cipher.getInstance(transformAsym);
+            if(ivParam==null)
+            cipher.init(mode, key, ivParam);
+            else cipher.init(mode, key);
+            return cipher.doFinal(claire);
+            
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        return null;
+    }
+    
+    
+    public byte [] hash(byte [] input) throws Exception{
+        MessageDigest md=MessageDigest.getInstance("SHA-256");
+        return  md.digest(input);
+    }
+    
+    public byte [] hashFile(String inputFile) throws Exception{
+        MessageDigest md=MessageDigest.getInstance("SHA-256");
+        FileInputStream fis=new FileInputStream(inputFile);
+        byte[] buffer = new byte[1024 * 1024];
+        int nombrebytes = 0;
+        while ((nombrebytes=fis.read(buffer))!=-1) {            
+            md.update(buffer, 0, nombrebytes);
+        }
+        
+        return  md.digest();
+    }
+    
+    // chiffrement synchrone
 }
