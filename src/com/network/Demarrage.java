@@ -12,33 +12,31 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author tapha
+
+ * @author ousmane3ndiaye
  */
 public class Demarrage {
-
-    public static void start() {
-        
+    public static  void start(){
         try {
-            Socket s = new Socket("127.0.0.1", 2024);
-
-           // Socket s = new Socket("172.16.0.15", 2024);
+            Socket s=new Socket("127.0.0.1", 2024);
             new Recepteur(s, null).start();
         } catch (IOException ex) {
-
-            try {
-                ServerSocket ss = new ServerSocket(2024);
-                System.out.println("Serveur demarrer");
-
-                Socket s = ss.accept();
-                new Emetteur(s, null).start();
-            } catch (IOException ex1) {
-                Logger.getLogger(Demarrage.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
+            
+                    try {
+                        ServerSocket ss=new ServerSocket(2024);
+                        System.out.println("serveur demarre .... ");
+                        Socket s = ss.accept();
+                        new Emetteur(s, null).start();
+                        
+                    } catch (IOException ex1) {
+                        Logger.getLogger(Demarrage.class.getName()).log(Level.SEVERE, null, ex1);
+                    }
+            
         }
     }
-
+    
     public static void main(String[] args) {
         Demarrage.start();
     }
+    
 }
