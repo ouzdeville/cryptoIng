@@ -18,6 +18,10 @@ public class Commande {
     public Commande(String commandLine) {
         String[] tab = commandLine.split(" ");
         action=tab[0];
+        options=new String[tab.length/2];
+        if(action.equals("cd"))
+            options[0]="-d "+tab[1];
+        else 
         for (int i = 1; i < tab.length; i=i+2) {
             options[(i-1)/2]=tab[0]+" "+tab[i+1];
         }
