@@ -91,4 +91,6 @@ public interface ICrypto {
 
     public PrivateKey loadPriveKey(String chemin, String password);
 
+    public void cipherProcessFolder(SecretKey k, String userstaphaDesktopTpTestEnc, String userstaphaDesktopTpTestDechiffrement, int DECRYPT_MODE, boolean b);
+
 }
