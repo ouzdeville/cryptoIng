@@ -18,6 +18,10 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import sn.presidence.dept.service.cryptoing.tool.CryptoImpl;
+import static sn.presidence.dept.service.cryptoing.tool.ICrypto.iv;
 
 /**
  *
@@ -47,22 +51,35 @@ public class Emetteur extends Thread {
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
 
-            pw.println("pwd");
-            String reponse = br.readLine();
+            CryptoImpl crypto = new CryptoImpl();
+            SecretKey key = crypto.generatePBEKey("@srtongpassword");
+
+            
+            String com = "pwd";
+            String com1 = chiffre(com);
+            pw.println(com1);
+            
+            
+            String reponse = dechiffre(br.readLine());
             System.out.print(reponse + ">");
             currentPath = reponse;
             Scanner sc = new Scanner(System.in);
+
             while (true) {
-                String com = sc.nextLine();
+                com = sc.nextLine();
                 System.out.println("Envoi de la commande : " + com); // Débogage
-                pw.println(com);
+
+                com1 = chiffre(com);
+                //envoie de commande chiffre
+                pw.println(com1);
+
                 pw.flush(); // Assurez-vous que flush() est appelé après chaque commande
 
                 Commande commande = new Commande(com);
 
                 switch (commande.getAction()) {
                     case "pwd":
-                        reponse = br.readLine();
+                        reponse = dechiffre(br.readLine());
                         System.out.println("Réponse pwd : " + reponse); // Débogage
                         currentPath = reponse.isEmpty() ? currentPath : reponse;
                         System.out.print(currentPath + ">");
@@ -70,22 +87,22 @@ public class Emetteur extends Thread {
 
                     case "ls":
                         System.out.println("Demande de liste de fichiers..."); // Débogage
-                        while (true) {
-                            reponse = br.readLine();
+                       // while (true) {
+                            reponse = dechiffre(br.readLine());
                             if ("klhgjlshjsdgfjhsdhdkjldshgjksdg".equals(reponse)) {
                                 break;
                             }
                             System.out.println("Fichier : " + reponse); // Débogage
-                        }
+                       // }
                         System.out.print(currentPath + ">");
                         break;
 
                     case "cd":
-                        reponse = br.readLine();
+                        reponse = dechiffre(br.readLine());
                         System.out.println("Réponse cd : " + reponse); // Débogage
                         currentPath = reponse.isEmpty() ? currentPath : reponse;
-                        pw.println("pwd");
-                        reponse = br.readLine();
+                        pw.println(chiffre("pwd"));
+                        reponse = dechiffre(br.readLine());
                         System.out.print(reponse + ">");
                         currentPath = reponse;
                         break;
@@ -96,7 +113,6 @@ public class Emetteur extends Thread {
                         break;
                 }
 
-                
             }
 
         } catch (Exception ex) {
@@ -104,4 +120,25 @@ public class Emetteur extends Thread {
         }
     }
 
+    public static  String chiffre(String com) {
+
+        CryptoImpl crypto = new CryptoImpl();
+        SecretKey key = crypto.generatePBEKey("@srtongpassword");
+
+        byte[] comCrypt = crypto.processData(com.getBytes(), key, Cipher.ENCRYPT_MODE, new IvParameterSpec(iv.getBytes()));
+        String com1 = crypto.bytesToHex(comCrypt);
+        return com1;
+    }
+
+    public static  String dechiffre(String com) {
+
+        CryptoImpl crypto = new CryptoImpl();
+        SecretKey key = crypto.generatePBEKey("@srtongpassword");
+
+        byte[] enc = crypto.hextoBytes(com);
+
+        byte[] comDrypt = crypto.processData(enc, key, Cipher.DECRYPT_MODE, new IvParameterSpec(iv.getBytes()));
+        String com1 = new String(comDrypt);
+        return com1;
+    }
 }

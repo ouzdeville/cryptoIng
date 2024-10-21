@@ -20,10 +20,21 @@ public class Commande {
         action=tab[0];
         options=new String[tab.length/2];
         if(action.equals("cd"))
-            options[0]="-d "+tab[1];
+            if(tab.length >= 2){
+                
+                options[0]="-d "+tab[1];
+            }
+            else{
+                
+                options=new String[1];
+                
+                options[0]="-d .";
+            }
+                
+            
         else 
         for (int i = 1; i < tab.length; i=i+2) {
-            options[(i-1)/2]=tab[0]+" "+tab[i+1];
+            options[(i-1)/2]=tab[i]+" "+tab[i+1];
         }
          
     }  
