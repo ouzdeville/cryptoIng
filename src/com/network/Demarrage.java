@@ -21,6 +21,7 @@ public class Demarrage {
             Socket s=new Socket("127.0.0.1", 2024);
             new Recepteur(s, null).start();
         } catch (IOException ex) {
+              
             
                     try {
                         ServerSocket ss=new ServerSocket(2024);

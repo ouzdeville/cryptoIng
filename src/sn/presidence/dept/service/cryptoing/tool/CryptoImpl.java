@@ -555,9 +555,9 @@ public class CryptoImpl implements ICrypto {
     
     // chiffrement synchrone
 
-    @Override
-    public void cipherProcessFolder(SecretKey k, String userstaphaDesktopTpTestEnc, String userstaphaDesktopTpTestDechiffrement, int DECRYPT_MODE, boolean b) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+//    @Override
+  //  public void cipherProcessFolder(SecretKey k, String userstaphaDesktopTpTestEnc, String userstaphaDesktopTpTestDechiffrement, int DECRYPT_MODE, boolean b) {
+  //      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    //}
 
 }

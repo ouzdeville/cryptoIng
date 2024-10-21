@@ -15,7 +15,6 @@ import java.io.OutputStream;
 
 import java.io.PrintStream;
 
-
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.file.Files;
@@ -23,10 +22,14 @@ import java.nio.file.attribute.FileTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import sn.presidence.dept.service.cryptoing.tool.CryptoImpl;
+import static sn.presidence.dept.service.cryptoing.tool.ICrypto.iv;
 
 /**
  *
-
+ *
  * @author ousmane3ndiaye
  */
 public class Recepteur extends Thread {
@@ -54,12 +57,20 @@ public class Recepteur extends Thread {
             BufferedOutputStream bos = new BufferedOutputStream(os);
             PrintStream pw = new PrintStream(bos, true); // Auto flush à true
             String commandLine;
+            
+            CryptoImpl crypto = new CryptoImpl();
+            SecretKey k = crypto.generatePBEKey("123456");
+            
             while (true) {
                 try {
                     commandLine = br.readLine();
+
                     if (commandLine == null || commandLine.isEmpty()) {
-                        commandLine = "pwd";
+                        continue; 
                     }
+
+                    commandLine = Emetteur.dechiffre(commandLine);
+
                     Commande commande = new Commande(commandLine);
                     String reponse = "";
                     switch (commande.getAction()) {
@@ -67,7 +78,7 @@ public class Recepteur extends Thread {
                             File dir = new File(path);
                             path = dir.getAbsolutePath().replace("\\.", "");
                             reponse = path;
-                            pw.println(path);
+                            pw.println(Emetteur.chiffre(path));
                             break;
 
                         case "ls":
@@ -82,10 +93,10 @@ public class Recepteur extends Thread {
                                     sb.append(line);
                                 }
                                 // envoyer le sb au serveur
-                                sb.append("klhgjlshjsdgfjhsdhdkjldshgjksdg\n");
+                         //       sb.append("klhgjlshjsdgfjhsdhdkjldshgjksdg\n");
                                 reponse = sb.toString();
                             }
-                            pw.println(reponse);
+                            pw.println(Emetteur.chiffre(reponse));
                             break;
                         case "cd":
                             System.out.println("cd");
@@ -124,7 +135,7 @@ public class Recepteur extends Thread {
                             // Affichage de la réponse
                             System.out.println("reponse=" + reponse);
                             // envoie de lq reponse
-                            pw.println(reponse);
+                            pw.println(Emetteur.chiffre(reponse));
                             pw.flush();
                             break;
 
@@ -163,6 +174,5 @@ public class Recepteur extends Thread {
         }
 
     }
-
 
 }

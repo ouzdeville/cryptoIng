@@ -81,7 +81,4 @@ public interface ICrypto {
     public byte[] processData(byte [] claire, Key key, int mode, IvParameterSpec ivParam);
 
    
-
-    public void cipherProcessFolder(SecretKey k, String userstaphaDesktopTpTestEnc, String userstaphaDesktopTpTestDechiffrement, int DECRYPT_MODE, boolean b);
-
 }

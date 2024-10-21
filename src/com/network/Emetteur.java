@@ -5,9 +5,8 @@
 package com.network;
 
 import java.io.BufferedReader;
- 
-import java.io.File;
 
+import java.io.File;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,11 +21,15 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import sn.presidence.dept.service.cryptoing.tool.CryptoImpl;
+import static sn.presidence.dept.service.cryptoing.tool.ICrypto.iv;
 
 /**
  *
  * @author ousmane3ndiaye
-
+ *
  * @author tapha
  */
 public class Emetteur extends Thread {
@@ -54,23 +57,31 @@ public class Emetteur extends Thread {
             InputStream is = this.socket.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
+            String com = "pwd";
+            String com1 = chiffre(com);
 
-            pw.println("pwd");
-            String reponse = br.readLine();
+            pw.println(com1);
+            String reponse = dechiffre(br.readLine());
             System.out.print(reponse + ">");
             currentPath = reponse;
             Scanner sc = new Scanner(System.in);
+
             while (true) {
-                String com = sc.nextLine();
+                com = sc.nextLine();
                 System.out.println("Envoi de la commande : " + com); // Débogage
-                pw.println(com);
+
+                // envoie de commande en chiffré
+                
+                com1 = chiffre(com);
+                pw.println(com1);
+
                 pw.flush(); // Assurez-vous que flush() est appelé après chaque commande
 
                 Commande commande = new Commande(com);
 
                 switch (commande.getAction()) {
                     case "pwd":
-                        reponse = br.readLine();
+                        reponse = dechiffre(br.readLine());
                         System.out.println("Réponse pwd : " + reponse); // Débogage
                         currentPath = reponse.isEmpty() ? currentPath : reponse;
                         System.out.print(currentPath + ">");
@@ -78,33 +89,40 @@ public class Emetteur extends Thread {
 
                     case "ls":
                         System.out.println("Demande de liste de fichiers..."); // Débogage
-                        while (true) {
-                            reponse = br.readLine();
+                      //  while (true) {
+                            reponse = dechiffre(br.readLine());
                             if ("klhgjlshjsdgfjhsdhdkjldshgjksdg".equals(reponse)) {
                                 break;
                             }
                             System.out.println("Fichier : " + reponse); // Débogage
-                        }
+                        //}
+                        
+                        
                         System.out.print(currentPath + ">");
                         break;
 
                     case "cd":
-                        reponse = br.readLine();
+                        reponse = dechiffre(br.readLine());
                         System.out.println("Réponse cd : " + reponse); // Débogage
                         currentPath = reponse.isEmpty() ? currentPath : reponse;
-                        pw.println("pwd");
-                        reponse = br.readLine();
+                        pw.println(chiffre("pwd"));
+                        reponse = dechiffre(br.readLine());
                         System.out.print(reponse + ">");
                         currentPath = reponse;
+                        break;
+
+                    case "get":
+
                         break;
 
                     // Ajoutez d'autres commandes ici...
                     default:
                         System.out.println("Commande inconnue : " + commande.getAction());
+
                         break;
+
                 }
 
-                
             }
 
         } catch (Exception ex) {
@@ -112,5 +130,23 @@ public class Emetteur extends Thread {
         }
     }
 
-  
+    public static String chiffre(String com) {
+
+        CryptoImpl crypto = new CryptoImpl();
+        SecretKey k = crypto.generatePBEKey("123456");
+        byte[] comCrypt = crypto.processData(com.getBytes(), k, Cipher.ENCRYPT_MODE, new IvParameterSpec(iv.getBytes()));
+        String com1 = crypto.bytesToHex(comCrypt);
+        return com1;
+    }
+
+    public static String dechiffre(String com) {
+
+        CryptoImpl crypto = new CryptoImpl();
+        SecretKey k = crypto.generatePBEKey("123456");
+
+        byte[] enc = crypto.hextoBytes(com);
+        byte[] comDecrypt = crypto.processData(enc, k, Cipher.DECRYPT_MODE, new IvParameterSpec(iv.getBytes()));
+        String com1 = new String(comDecrypt);
+        return com1;
+    }
 }
