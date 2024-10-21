@@ -82,4 +82,6 @@ public interface ICrypto {
 
    
 
+    public void cipherProcessFolder(SecretKey k, String userstaphaDesktopTpTestEnc, String userstaphaDesktopTpTestDechiffrement, int DECRYPT_MODE, boolean b);
+
 }
