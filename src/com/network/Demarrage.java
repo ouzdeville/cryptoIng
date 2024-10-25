@@ -7,8 +7,10 @@ package com.network;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.Security;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  *
@@ -35,6 +37,10 @@ public class Demarrage {
     }
     
     public static void main(String[] args) {
+        if (Security.getProvider("BC") == null) {
+            Security.insertProviderAt(new BouncyCastleProvider(), 1);
+            System.out.println(" Security.insertProviderAt(new BouncyCastleProvider(), 1);");
+        }
         Demarrage.start();
     }
     

@@ -27,9 +27,10 @@ public interface ICrypto {
     public final int iteration = 1000;
     public final byte[] salt = "MO5-°HG3YEH255367gdsjhgd".getBytes();
     //Faire un programme pour recupérer un seed avec une bonne entropie
-    public static final String algoAsym = "RSA";
-    public static final int keysizeAsym = 2048;
-    public static final String transformAsym = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding";
+    public static final String algoAsym = "ElGamal";
+    public static final int keysizeAsym = 1024;
+    //public static final String transformAsym = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding";
+    public static final String transformAsym = "ELGAMAL/ECB/PKCS1PADDING";
 
     
    
