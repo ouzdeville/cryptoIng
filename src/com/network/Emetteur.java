@@ -5,7 +5,10 @@
 package com.network;
 
 import java.io.BufferedReader;
+ 
 import java.io.File;
+
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,6 +32,8 @@ import static sn.presidence.dept.service.cryptoing.tool.ICrypto.iv;
 /**
  *
  * @author ousmane3ndiaye
+
+ * @author tapha
  */
 public class Emetteur extends Thread {
 
@@ -48,6 +53,8 @@ public class Emetteur extends Thread {
         OutputStream os = null;
         try {
             // envoie de lq reponse
+            //envoye de la reponse
+
             os = socket.getOutputStream();
             PrintWriter pw = new PrintWriter(os, true);
 
