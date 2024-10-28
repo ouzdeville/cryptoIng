@@ -56,7 +56,8 @@ public class Emetteur extends Thread {
             BufferedReader br = new BufferedReader(isr);
 
             // Implementer le partage des cles
-            password = partageDeCleRSA();
+            //password = partageDeClePublic();
+            password=PartageCles.partageDeClesDH(socket, true);
 
             String com = "pwd";
             String com1 = chiffre(com,password);
@@ -110,6 +111,9 @@ public class Emetteur extends Thread {
                         break;
 
                     // Ajoutez d'autres commandes ici...
+                    case "enc":
+                      
+                        break;
                     default:
                         System.out.println("Commande inconnue : " + commande.getAction());
                         break;
@@ -153,7 +157,7 @@ public class Emetteur extends Thread {
      *
      * @return
      */
-    private String partageDeCleRSA() throws Exception {
+    private String partageDeClePublic() throws Exception {
         CryptoImpl crypto = new CryptoImpl();
         KeyPair kpair = crypto.generateKeyPair("sdasd".getBytes());
         OutputStream os = socket.getOutputStream();

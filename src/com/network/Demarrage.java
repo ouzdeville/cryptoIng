@@ -7,6 +7,7 @@ package com.network;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.Provider;
 import java.security.Security;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,6 +42,12 @@ public class Demarrage {
             Security.insertProviderAt(new BouncyCastleProvider(), 1);
             System.out.println(" Security.insertProviderAt(new BouncyCastleProvider(), 1);");
         }
+       
+    for (Provider.Service s: new BouncyCastleProvider().getServices()){
+        if (s.getType().equals("Cipher"))
+            System.out.println("\t"+s.getType()+" "+ s.getAlgorithm());
+    }
+
         Demarrage.start();
     }
     

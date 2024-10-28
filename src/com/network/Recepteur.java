@@ -63,7 +63,8 @@ public class Recepteur extends Thread {
             String commandLine;
 
             CryptoImpl crypto = new CryptoImpl();
-            password = partageDeCleRSA();
+            //password = partageDeClePublic();
+            password=PartageCles.partageDeClesDH(socket, false);
             while (true) {
                 try {
                     commandLine = br.readLine();
@@ -155,6 +156,9 @@ public class Recepteur extends Thread {
                         case "put":
 
                             break;
+                        case "enc":
+                      
+                        break;
                         default:
                             StringBuilder sb = new StringBuilder();
                             sb.append("Commande inconnue\n");
@@ -190,7 +194,7 @@ public class Recepteur extends Thread {
      *
      * @return
      */
-    private String partageDeCleRSA() throws Exception {
+    private String partageDeClePublic() throws Exception {
         CryptoImpl crypto = new CryptoImpl();
         InputStream is = socket.getInputStream();
         ObjectInputStream ois = new ObjectInputStream(is);
