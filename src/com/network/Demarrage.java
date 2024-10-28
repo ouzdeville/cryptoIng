@@ -44,11 +44,7 @@ public class Demarrage {
             System.out.println(" Security.insertProviderAt(new BouncyCastleProvider(), 1);");
         }
        
-    for (Provider.Service s: new BouncyCastleProvider().getServices()){
-        if (s.getType().equals("Cipher"))
-            System.out.println("\t"+s.getType()+" "+ s.getAlgorithm());
-    }
-
+ 
         Demarrage.start();
     }
     
