@@ -7,7 +7,9 @@ package cryptoing;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
 import java.security.Signature;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import sn.presidence.dept.service.cryptoing.tool.CryptoImpl;
 
 /**
@@ -18,8 +20,12 @@ public class SignatureTest {
     
     
     public static void main(String[] args) throws Exception {
-        KeyPairGenerator kp= KeyPairGenerator.getInstance("DSA");
-        kp.initialize(2048);
+        if (Security.getProvider("BC") == null) {
+            Security.insertProviderAt(new BouncyCastleProvider(), 1);
+            System.out.println(" Security.insertProviderAt(new BouncyCastleProvider(), 1);");
+        }
+        KeyPairGenerator kp= KeyPairGenerator.getInstance("ECDSA","BC");
+        //kp.initialize(2048);
         KeyPair signKeyPair = kp.genKeyPair();
         
         CryptoImpl crypto = new CryptoImpl();
