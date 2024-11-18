@@ -8,6 +8,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
+import sn.presidence.dept.service.cryptoing.tool.CryptoImpl;
 
 /**
  *
@@ -19,32 +20,20 @@ public class SignatureTest {
     public static void main(String[] args) throws Exception {
         KeyPairGenerator kp= KeyPairGenerator.getInstance("DSA");
         kp.initialize(2048);
-        KeyPair keyPair = kp.genKeyPair();
+        KeyPair signKeyPair = kp.genKeyPair();
         
-        Signature signataire=Signature.getInstance("SHA256withDSA");
-        signataire.initSign(keyPair.getPrivate());
+        CryptoImpl crypto = new CryptoImpl();
+        KeyPair encryptKeypair = crypto.generateKeyPair("jhgjhgjh".getBytes());
         
-        String msg="Hello ...";
-        
-        signataire.update(msg.getBytes());
-        byte[] mysign = signataire.sign();
-        
+        crypto.HybridEnCryptSign(encryptKeypair.getPublic(),signKeyPair.getPrivate(),
+                "C:\\Users\\ousmane3ndiaye\\Desktop\\chap1\\chap1.pdf",
+                "C:\\Users\\ousmane3ndiaye\\Desktop\\chap1\\chap1.pdf.cry");
         
         
-        Signature verificateur=Signature.getInstance("SHA256withDSA");
-        verificateur.initVerify(keyPair.getPublic());
-        
-        
-        
-        verificateur.update(msg.getBytes());
-        boolean test = verificateur.verify(mysign);
-        
-        System.out.println(test);
-        
-        
-        
-        
-        
+         crypto.HybridDeCryptSign(encryptKeypair.getPrivate(),signKeyPair.getPublic(),
+                 "C:\\Users\\ousmane3ndiaye\\Desktop\\chap1\\chap1.pdf.cry",
+                "C:\\Users\\ousmane3ndiaye\\Desktop\\chap1\\chap11.pdf");
+           
     }
     
 }

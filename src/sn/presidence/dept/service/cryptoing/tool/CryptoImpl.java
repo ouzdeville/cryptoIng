@@ -31,6 +31,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Signature;
+import java.security.cert.X509Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
@@ -44,6 +46,7 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -138,8 +141,8 @@ public class CryptoImpl implements ICrypto {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
             int v = bytes[j] & 0xFF;
-            hexChars[j * 2 + 1] = HEX_ARRAY[v >>> 4];
-            hexChars[j * 2] = HEX_ARRAY[v & 0x0F];
+            hexChars[j * 2 ] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2+ 1] = HEX_ARRAY[v & 0x0F];
         }
         return new String(hexChars);
     }
@@ -149,8 +152,8 @@ public class CryptoImpl implements ICrypto {
         byte[] bytes = new byte[message.length() / 2];
         char[] hexChars = message.toCharArray();
         for (int j = 0; j < bytes.length; j++) {
-            byte v0 = (byte) Character.digit(hexChars[2 * j], 16);
-            byte v1 = (byte) Character.digit(hexChars[2 * j + 1], 16);
+            byte v0 = (byte) Character.digit(hexChars[2 * j+1], 16);
+            byte v1 = (byte) Character.digit(hexChars[2 * j], 16);
             bytes[j] = (byte) (16 * v1 + v0);
         }
         return bytes;
@@ -299,8 +302,9 @@ public class CryptoImpl implements ICrypto {
 
     @Override
     /**
-     * SecretKeySpec pour les cles secrete type=0 PKCS8EncodedKeySpec pour les
-     * cles privee type=1 X509EncodedKeySpec pour les publiques type=2
+     * SecretKeySpec pour les cles secrete type=0 
+     * PKCS8EncodedKeySpec pour les cles privee type=1 
+     * X509EncodedKeySpec pour les publiques type=2
      *
      */
     public Key loadHexKey(String chemin, String password, int type) {
@@ -370,7 +374,7 @@ public class CryptoImpl implements ICrypto {
             System.out.println("IV:");
             System.out.println(bytesToHex(IvParam.getIV()));
             byte[] keypack = packKeyAndIv(secretKey, IvParam);
-            Cipher pubCipher=Cipher.getInstance("RSA");
+            Cipher pubCipher=Cipher.getInstance(algoAsym);
             pubCipher.init(Cipher.ENCRYPT_MODE, k);
             byte[] encryptedPack = pubCipher.doFinal(keypack);
             String encryptedPackHex = bytesToHex(encryptedPack);
@@ -537,7 +541,7 @@ public class CryptoImpl implements ICrypto {
     
     
     public byte [] hash(byte [] input) throws Exception{
-        MessageDigest md=MessageDigest.getInstance("SHA-256");
+        MessageDigest md=MessageDigest.getInstance("SHA-1");
         return  md.digest(input);
     }
     
@@ -553,8 +557,313 @@ public class CryptoImpl implements ICrypto {
         return  md.digest();
     }
     
-    // chiffrement synchrone
+    
+    
+    public boolean HybridEnCryptMAC(PublicKey k, String fileToencrypt, String encryptedFile) {
+        try {
+            SecretKey secretKey = generateKey();
+            
+            System.out.println("Secret Key:");
+            System.out.println(bytesToHex(secretKey.getEncoded()));
+            IvParameterSpec IvParam = new IvParameterSpec(iv.getBytes());
+            System.out.println("IV:");
+            System.out.println(bytesToHex(IvParam.getIV()));
+            byte[] keypack = packKeyAndIv(secretKey, IvParam);
+            Cipher pubCipher=Cipher.getInstance(algoAsym);
+            pubCipher.init(Cipher.ENCRYPT_MODE, k);
+            byte[] encryptedPack = pubCipher.doFinal(keypack);
+            String encryptedPackHex = bytesToHex(encryptedPack);
+            
+            //chiffrement symetrique
+            Cipher symCipher=Cipher.getInstance(transform);
+            symCipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParam);
+            FileInputStream fis=new FileInputStream(fileToencrypt);
+            
+            System.out.println("TextZise:"+fis.available());
+            CipherInputStream cis=new CipherInputStream(fis, symCipher);
+            
+            byte[] buffer = new byte[1024 * 1024];
+            byte[] buffer1 = new byte[0];
+            int nombrebytes = 0;
+            while ((nombrebytes = cis.read(buffer)) != -1) {
+                buffer1=concat(buffer1, buffer, nombrebytes);
+            }
+            
+            String encryptedFileHex = bytesToHex(buffer1);
+            System.out.println("Secret Message:");
+            System.out.println(encryptedFileHex);
+            
+            FileOutputStream fos=new FileOutputStream(encryptedFile);
+            PrintWriter pw=new PrintWriter(fos, true);
+            pw.println("-----ENCRYPTED KEY-----");
+            pw.println(encryptedPackHex);
+            pw.println("-----END ENCRYPTED KEY-----");
+            
+            pw.println("-----ENCRYPTED MESSAGE-----");
+            pw.println(encryptedFileHex);
+            pw.println("-----END ENCRYPTED MESSAGE-----");
+            
+            
+            
+            //Encrypt-then-MAC (EtM)
+            Mac mac=Mac.getInstance("HmacSHA256");
+            //initialise avec la cle symetrique
+            mac.init(secretKey);
+            
+            byte[] mymac = mac.doFinal(buffer1);
+            
+            pw.println("-----MAC MESSAGE-----");
+            pw.println(bytesToHex(mymac));
+            pw.println("-----END MAC MESSAGE-----");
+            
+            
+            fis.close();
+            pw.close();
+            fos.close();
+            return true;
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+     public boolean HybridDeCryptMAC(PrivateKey k, String fileTodecrypt, String decryptedFile) {
+        try {
+            //FileInputStream fis=new FileInputStream(fileTodecrypt);
+            FileReader fr=new FileReader(fileTodecrypt);
+            // comme cest du text on peut utiliser BufferedReader
+            BufferedReader br=new BufferedReader(fr);
+            br.readLine();//-----ENCRYPTED KEY-----
+            String encryptedPackHex = br.readLine();
+            br.readLine();//-----END ENCRYPTED KEY-----
+            br.readLine();//-----ENCRYPTED MESSAGE-----
+            String encryptedFileHex = br.readLine();
+            System.out.println("Secret Message:");
+            System.out.println(encryptedFileHex);
+            
+            br.readLine();//-----END MESSAGE-----
+            br.readLine();//-----MAC-----
+            String hmac = br.readLine();
+            
+            
+            br.close();
+            fr.close();
+            
+            //dechiffrement de la cle et IV par la cle privee
+            byte[] encryptedPack = hextoBytes(encryptedPackHex);
+            Cipher pubCipher=Cipher.getInstance(algoAsym);
+            pubCipher.init(Cipher.DECRYPT_MODE, k);
+            byte[] keypack = pubCipher.doFinal(encryptedPack);
+            Object[] keyAndIV = unpackKeyAndIV(keypack);
+            SecretKeySpec keySym = (SecretKeySpec) keyAndIV[0];
+            System.out.println("Secret Key:");
+            System.out.println(bytesToHex(keySym.getEncoded()));
+            IvParameterSpec ivParam=(IvParameterSpec) keyAndIV[1];
+            System.out.println("IV:");
+            System.out.println(bytesToHex(ivParam.getIV()));
+            //System.out.println(new String(ivParam.getIV()));
+            byte[] encryptedFile = hextoBytes(encryptedFileHex);
+            
+            // verification du HMAC
+            //Encrypt-then-MAC (EtM)
+            Mac mac=Mac.getInstance("HmacSHA256");
+            //initialise avec la cle symetrique
+            mac.init(keySym);
+            
+            byte[] mymac = mac.doFinal(encryptedFile);
+            String myhmac = bytesToHex(mymac);
+            if(myhmac.equals(hmac)){
+                System.out.println("hmac ok");
+            }
+            else {
+                System.out.println("document corompu");
+                return false;
+            }
+            
+            // dechiffrement du document
+            Cipher symCipher=Cipher.getInstance(transform);
+            symCipher.init(Cipher.DECRYPT_MODE, keySym, ivParam);
+            FileOutputStream fos=new FileOutputStream(decryptedFile);
+            CipherOutputStream cos=new CipherOutputStream(fos, symCipher);
+            cos.write(encryptedFile);
+            cos.close();
+            fos.close();
+            
+            
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
 
     
 
+     
+     
+    public boolean HybridEnCryptSign(PublicKey k, PrivateKey signKey, String fileToencrypt, String encryptedFile) {
+        try {
+            SecretKey secretKey = generateKey();
+            
+            System.out.println("Secret Key:");
+            System.out.println(bytesToHex(secretKey.getEncoded()));
+            IvParameterSpec IvParam = new IvParameterSpec(iv.getBytes());
+            System.out.println("IV:");
+            System.out.println(bytesToHex(IvParam.getIV()));
+            byte[] keypack = packKeyAndIv(secretKey, IvParam);
+            Cipher pubCipher=Cipher.getInstance(algoAsym);
+            pubCipher.init(Cipher.ENCRYPT_MODE, k);
+            byte[] encryptedPack = pubCipher.doFinal(keypack);
+            String encryptedPackHex = bytesToHex(encryptedPack);
+            
+            //chiffrement symetrique
+            Cipher symCipher=Cipher.getInstance(transform);
+            symCipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParam);
+            FileInputStream fis=new FileInputStream(fileToencrypt);
+            
+            System.out.println("TextZise:"+fis.available());
+            CipherInputStream cis=new CipherInputStream(fis, symCipher);
+            
+            byte[] buffer = new byte[1024 * 1024];
+            byte[] buffer1 = new byte[0];
+            int nombrebytes = 0;
+            while ((nombrebytes = cis.read(buffer)) != -1) {
+                buffer1=concat(buffer1, buffer, nombrebytes);
+            }
+            
+            String encryptedFileHex = bytesToHex(buffer1);
+            System.out.println("Secret Message:");
+            System.out.println(encryptedFileHex);
+            
+            FileOutputStream fos=new FileOutputStream(encryptedFile);
+            PrintWriter pw=new PrintWriter(fos, true);
+            pw.println("-----ENCRYPTED KEY-----");
+            pw.println(encryptedPackHex);
+            pw.println("-----END ENCRYPTED KEY-----");
+            
+            pw.println("-----ENCRYPTED MESSAGE-----");
+            pw.println(encryptedFileHex);
+            pw.println("-----END ENCRYPTED MESSAGE-----");
+            
+            
+            
+            //Encrypt-then-Sign (EtS)
+            Signature signataire=Signature.getInstance(algoSign);
+            //initialise avec la cle symetrique
+            signataire.initSign(signKey);
+            
+            signataire.update(buffer1);
+            byte[] signature = signataire.sign();
+            
+            pw.println("-----Signature MESSAGE-----");
+            pw.println(bytesToHex(signature));
+            pw.println("-----END Signature MESSAGE-----");
+            
+            
+            fis.close();
+            pw.close();
+            fos.close();
+            return true;
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public boolean HybridDeCryptSign(PrivateKey k, PublicKey verifyKey, String fileTodecrypt, String decryptedFile) {
+        try {
+            //FileInputStream fis=new FileInputStream(fileTodecrypt);
+            FileReader fr=new FileReader(fileTodecrypt);
+            // comme cest du text on peut utiliser BufferedReader
+            BufferedReader br=new BufferedReader(fr);
+            br.readLine();//-----ENCRYPTED KEY-----
+            String encryptedPackHex = br.readLine();
+            br.readLine();//-----END ENCRYPTED KEY-----
+            br.readLine();//-----ENCRYPTED MESSAGE-----
+            String encryptedFileHex = br.readLine();
+            System.out.println("Secret Message:");
+            System.out.println(encryptedFileHex);
+            
+            br.readLine();//-----END MESSAGE-----
+            br.readLine();//-----MAC-----
+            String sign = br.readLine();
+            
+            
+            br.close();
+            fr.close();
+            
+            //dechiffrement de la cle et IV par la cle privee
+            byte[] encryptedPack = hextoBytes(encryptedPackHex);
+            Cipher pubCipher=Cipher.getInstance(algoAsym);
+            pubCipher.init(Cipher.DECRYPT_MODE, k);
+            byte[] keypack = pubCipher.doFinal(encryptedPack);
+            Object[] keyAndIV = unpackKeyAndIV(keypack);
+            SecretKeySpec keySym = (SecretKeySpec) keyAndIV[0];
+            System.out.println("Secret Key:");
+            System.out.println(bytesToHex(keySym.getEncoded()));
+            IvParameterSpec ivParam=(IvParameterSpec) keyAndIV[1];
+            System.out.println("IV:");
+            System.out.println(bytesToHex(ivParam.getIV()));
+            //System.out.println(new String(ivParam.getIV()));
+            byte[] encryptedFile = hextoBytes(encryptedFileHex);
+            
+            // verification de lq signature
+            //Encrypt-then-Sign (EtM)
+            Signature signataire=Signature.getInstance(algoSign);
+            //initialise avec la cle  verification
+            signataire.initVerify(verifyKey);
+            
+            signataire.update(encryptedFile);
+            boolean result = signataire.verify(hextoBytes(sign));
+            
+            if(result){
+                System.out.println("Signature ok");
+            }
+            else {
+                System.out.println("document corompu");
+                return false;
+            }
+            
+            // dechiffrement du document
+            Cipher symCipher=Cipher.getInstance(transform);
+            symCipher.init(Cipher.DECRYPT_MODE, keySym, ivParam);
+            FileOutputStream fos=new FileOutputStream(decryptedFile);
+            CipherOutputStream cos=new CipherOutputStream(fos, symCipher);
+            cos.write(encryptedFile);
+            cos.close();
+            fos.close();
+            
+            
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
+     
+    
+     
+     public boolean HybridEnCryptSign(X509Certificate cert, PrivateKey signKey, String fileToencrypt, String encryptedFile) {
+        try {
+           
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+     
+     
+    public boolean HybridDeCryptSign(PrivateKey k, X509Certificate cert, String fileTodecrypt, String decryptedFile) {
+        try {
+            
+            
+            
+        } catch (Exception ex) {
+            Logger.getLogger(CryptoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
+
+    
 }

@@ -166,6 +166,7 @@ public class Emetteur extends Thread {
      */
     private String partageDeClePublic() throws Exception {
         CryptoImpl crypto = new CryptoImpl();
+            // ELGAMAL_1024_ECB_WITH_AES_256_CBC_SHA256
         KeyPair kpair = crypto.generateKeyPair("sdasd".getBytes());
         OutputStream os = socket.getOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(os);

