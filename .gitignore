@@ -26,3 +26,8 @@ hs_err_pid*
 
 mykey.sn
 /KeySecret.ing
+
+# files in com.network
+src/com/network
+tests/
+src/sn/presidence/dept/service/cryptoing/tool/Client.java
