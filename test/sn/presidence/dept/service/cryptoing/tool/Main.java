@@ -16,7 +16,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ICrypto crypto  =  new CryptoImpl();
+        ICrypto crypto=new CryptoImpl();
         SecretKey k = crypto.generateKey();
         System.out.println(k.getEncoded().length*8);
         String keyString=crypto.bytesToHex(k.getEncoded());
