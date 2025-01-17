@@ -29,5 +29,6 @@ mykey.sn
 
 # files in com.network
 src/com/network
-tests/
+test/
 src/sn/presidence/dept/service/cryptoing/tool/Client.java
+src/sn/presidence/dept/service/cryptoing/tool/SwingGlisoftLike.java
