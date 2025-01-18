@@ -30,6 +30,32 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
+        exportButton = new javax.swing.JButton();
+        importKeyButton = new javax.swing.JButton();
+        generateKeyButton = new javax.swing.JButton();
+        deleteKeyButton = new javax.swing.JButton();
+        listKeysButton = new javax.swing.JButton();
+        changePasswordButton = new javax.swing.JButton();
+        generateKeyLabel = new javax.swing.JLabel();
+        nameLabel = new javax.swing.JLabel();
+        emailLabel = new javax.swing.JLabel();
+        nameTextField = new javax.swing.JTextField();
+        emailTextField = new javax.swing.JTextField();
+        keyTypesLabel = new javax.swing.JLabel();
+        rsaCheckBox = new javax.swing.JCheckBox();
+        dsaCheckBox = new javax.swing.JCheckBox();
+        keyLengthLabel = new javax.swing.JLabel();
+        tenTwentyFourCheckBox = new javax.swing.JCheckBox();
+        twentyFourtyEigthCheckBox = new javax.swing.JCheckBox();
+        fourtyNetySixCheckBox = new javax.swing.JCheckBox();
+        validDaysLabel = new javax.swing.JLabel();
+        validDaysTextField = new javax.swing.JTextField();
+        zeroValiddaysLabel = new javax.swing.JLabel();
+        passwordLabel = new javax.swing.JLabel();
+        passwordtextField = new javax.swing.JPasswordField();
+        confirmPasswordLabel = new javax.swing.JLabel();
+        confirmPasswordTextField = new javax.swing.JPasswordField();
+        OKButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -62,18 +88,125 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
             .addGap(0, 31, Short.MAX_VALUE)
         );
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBackground(new java.awt.Color(255, 204, 204));
+
+        exportButton.setBackground(new java.awt.Color(204, 204, 204));
+        exportButton.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        exportButton.setText("Export Key");
+        exportButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        importKeyButton.setBackground(new java.awt.Color(204, 204, 204));
+        importKeyButton.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        importKeyButton.setText("Import Key");
+        importKeyButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        importKeyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importKeyButtonActionPerformed(evt);
+            }
+        });
+
+        generateKeyButton.setBackground(new java.awt.Color(204, 204, 204));
+        generateKeyButton.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        generateKeyButton.setText("generate Key");
+        generateKeyButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        deleteKeyButton.setBackground(new java.awt.Color(204, 204, 204));
+        deleteKeyButton.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        deleteKeyButton.setText("Delete Key");
+        deleteKeyButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        deleteKeyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteKeyButtonActionPerformed(evt);
+            }
+        });
+
+        listKeysButton.setBackground(new java.awt.Color(204, 204, 204));
+        listKeysButton.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        listKeysButton.setText("List Keys");
+        listKeysButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        changePasswordButton.setBackground(new java.awt.Color(204, 204, 204));
+        changePasswordButton.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        changePasswordButton.setText("Change Password");
+        changePasswordButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 179, Short.MAX_VALUE)
+            .addComponent(exportButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(importKeyButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(generateKeyButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(deleteKeyButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(listKeysButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(changePasswordButton, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 401, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(exportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(importKeyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(generateKeyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(deleteKeyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(listKeysButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(changePasswordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
+
+        generateKeyLabel.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        generateKeyLabel.setForeground(new java.awt.Color(255, 51, 51));
+        generateKeyLabel.setText("Generate Key");
+
+        nameLabel.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        nameLabel.setText("Name:");
+
+        emailLabel.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        emailLabel.setText("Email:");
+
+        keyTypesLabel.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        keyTypesLabel.setText("Key Types");
+
+        rsaCheckBox.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        rsaCheckBox.setText("RSA");
+
+        dsaCheckBox.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        dsaCheckBox.setText("DSA (DH/DSS)");
+
+        keyLengthLabel.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        keyLengthLabel.setText("Key Length");
+
+        tenTwentyFourCheckBox.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        tenTwentyFourCheckBox.setText("1024 bits");
+
+        twentyFourtyEigthCheckBox.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        twentyFourtyEigthCheckBox.setText("2048 bits");
+
+        fourtyNetySixCheckBox.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        fourtyNetySixCheckBox.setText("4096 bits");
+
+        validDaysLabel.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        validDaysLabel.setText("Valid Days");
+
+        validDaysTextField.setText("0");
+
+        zeroValiddaysLabel.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        zeroValiddaysLabel.setText("days (0: never expired)");
+
+        passwordLabel.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        passwordLabel.setText("Password:");
+
+        confirmPasswordLabel.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        confirmPasswordLabel.setText("Confirm:");
+
+        OKButton.setBackground(new java.awt.Color(204, 204, 204));
+        OKButton.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        OKButton.setText("OK");
+        OKButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -83,7 +216,58 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 495, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(generateKeyLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(keyTypesLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(emailLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(nameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(keyLengthLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(nameTextField)
+                                            .addComponent(emailTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(57, 57, 57)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(rsaCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(dsaCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(tenTwentyFourCheckBox)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(twentyFourtyEigthCheckBox)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(fourtyNetySixCheckBox)
+                                                .addGap(0, 0, Short.MAX_VALUE))))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(validDaysLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(validDaysTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(zeroValiddaysLabel))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(confirmPasswordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(14, 14, 14)))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(confirmPasswordTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                                    .addComponent(passwordtextField)))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(7, 7, 7)
+                        .addComponent(OKButton, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 86, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -92,7 +276,45 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(generateKeyLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(emailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(keyTypesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rsaCheckBox)
+                            .addComponent(dsaCheckBox))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(keyLengthLabel)
+                            .addComponent(tenTwentyFourCheckBox)
+                            .addComponent(twentyFourtyEigthCheckBox)
+                            .addComponent(fourtyNetySixCheckBox))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(validDaysLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(validDaysTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(zeroValiddaysLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(passwordtextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(confirmPasswordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(confirmPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(OKButton, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 47, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -113,6 +335,14 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void importKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importKeyButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_importKeyButtonActionPerformed
+
+    private void deleteKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteKeyButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_deleteKeyButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -150,9 +380,35 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton OKButton;
+    private javax.swing.JButton changePasswordButton;
+    private javax.swing.JLabel confirmPasswordLabel;
+    private javax.swing.JPasswordField confirmPasswordTextField;
+    private javax.swing.JButton deleteKeyButton;
+    private javax.swing.JCheckBox dsaCheckBox;
+    private javax.swing.JLabel emailLabel;
+    private javax.swing.JTextField emailTextField;
+    private javax.swing.JButton exportButton;
+    private javax.swing.JCheckBox fourtyNetySixCheckBox;
+    private javax.swing.JButton generateKeyButton;
+    private javax.swing.JLabel generateKeyLabel;
+    private javax.swing.JButton importKeyButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JLabel keyLengthLabel;
+    private javax.swing.JLabel keyTypesLabel;
+    private javax.swing.JButton listKeysButton;
+    private javax.swing.JLabel nameLabel;
+    private javax.swing.JTextField nameTextField;
+    private javax.swing.JLabel passwordLabel;
+    private javax.swing.JPasswordField passwordtextField;
+    private javax.swing.JCheckBox rsaCheckBox;
+    private javax.swing.JCheckBox tenTwentyFourCheckBox;
+    private javax.swing.JCheckBox twentyFourtyEigthCheckBox;
+    private javax.swing.JLabel validDaysLabel;
+    private javax.swing.JTextField validDaysTextField;
+    private javax.swing.JLabel zeroValiddaysLabel;
     // End of variables declaration//GEN-END:variables
 }
