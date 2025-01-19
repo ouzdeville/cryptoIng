@@ -26,6 +26,11 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
         jPanel1 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -36,6 +41,10 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
         deleteKeyButton = new javax.swing.JButton();
         listKeysButton = new javax.swing.JButton();
         changePasswordButton = new javax.swing.JButton();
+        encryptButton = new javax.swing.JButton();
+        decryptButton = new javax.swing.JButton();
+        signButton = new javax.swing.JButton();
+        verifyButton = new javax.swing.JButton();
         generateKeyLabel = new javax.swing.JLabel();
         nameLabel = new javax.swing.JLabel();
         emailLabel = new javax.swing.JLabel();
@@ -56,6 +65,18 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
         confirmPasswordLabel = new javax.swing.JLabel();
         confirmPasswordTextField = new javax.swing.JPasswordField();
         OKButton = new javax.swing.JButton();
+        encryptCheckBox = new javax.swing.JCheckBox();
+        pathLabel = new javax.swing.JLabel();
+
+        jMenuItem1.setText("jMenuItem1");
+
+        jMenuItem2.setText("jMenuItem2");
+
+        jMenu1.setText("jMenu1");
+
+        jMenuItem3.setText("jMenuItem3");
+
+        jMenu2.setText("jMenu2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -130,6 +151,26 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
         changePasswordButton.setText("Change Password");
         changePasswordButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        encryptButton.setBackground(new java.awt.Color(204, 204, 204));
+        encryptButton.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        encryptButton.setText("Encrypt");
+        encryptButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        decryptButton.setBackground(new java.awt.Color(204, 204, 204));
+        decryptButton.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        decryptButton.setText("Decrypt");
+        decryptButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        signButton.setBackground(new java.awt.Color(204, 204, 204));
+        signButton.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        signButton.setText("Sign");
+        signButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        verifyButton.setBackground(new java.awt.Color(204, 204, 204));
+        verifyButton.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        verifyButton.setText("Verify");
+        verifyButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -140,6 +181,13 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
             .addComponent(deleteKeyButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(listKeysButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(changePasswordButton, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(verifyButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(signButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(decryptButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(encryptButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -155,7 +203,15 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
                 .addComponent(listKeysButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(changePasswordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(97, 97, 97)
+                .addComponent(encryptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(decryptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(signButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(verifyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 57, Short.MAX_VALUE))
         );
 
         generateKeyLabel.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
@@ -207,6 +263,12 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
         OKButton.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
         OKButton.setText("OK");
         OKButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        encryptCheckBox.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        encryptCheckBox.setText("Encrypt file");
+
+        pathLabel.setFont(new java.awt.Font("Helvetica Neue", 3, 13)); // NOI18N
+        pathLabel.setText("path:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -263,11 +325,19 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
                                         .addGap(14, 14, 14)))
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(confirmPasswordTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-                                    .addComponent(passwordtextField)))))
+                                    .addComponent(passwordtextField))))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addComponent(OKButton, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 86, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(encryptCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(pathLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(7, 7, 7)
+                                .addComponent(OKButton, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(459, 459, 459))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -312,9 +382,13 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(confirmPasswordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(confirmPasswordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(OKButton, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 47, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(OKButton, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(encryptCheckBox)
+                            .addComponent(pathLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -384,15 +458,23 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
     private javax.swing.JButton changePasswordButton;
     private javax.swing.JLabel confirmPasswordLabel;
     private javax.swing.JPasswordField confirmPasswordTextField;
+    private javax.swing.JButton decryptButton;
     private javax.swing.JButton deleteKeyButton;
     private javax.swing.JCheckBox dsaCheckBox;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JTextField emailTextField;
+    private javax.swing.JButton encryptButton;
+    private javax.swing.JCheckBox encryptCheckBox;
     private javax.swing.JButton exportButton;
     private javax.swing.JCheckBox fourtyNetySixCheckBox;
     private javax.swing.JButton generateKeyButton;
     private javax.swing.JLabel generateKeyLabel;
     private javax.swing.JButton importKeyButton;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -404,11 +486,14 @@ public class SwingGlisoftLike extends javax.swing.JFrame {
     private javax.swing.JTextField nameTextField;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JPasswordField passwordtextField;
+    private javax.swing.JLabel pathLabel;
     private javax.swing.JCheckBox rsaCheckBox;
+    private javax.swing.JButton signButton;
     private javax.swing.JCheckBox tenTwentyFourCheckBox;
     private javax.swing.JCheckBox twentyFourtyEigthCheckBox;
     private javax.swing.JLabel validDaysLabel;
     private javax.swing.JTextField validDaysTextField;
+    private javax.swing.JButton verifyButton;
     private javax.swing.JLabel zeroValiddaysLabel;
     // End of variables declaration//GEN-END:variables
 }
