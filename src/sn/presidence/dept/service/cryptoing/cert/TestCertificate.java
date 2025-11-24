@@ -36,7 +36,7 @@ public class TestCertificate {
         X509Certificate caCert = CertificatUtils.ChargeCertficat("test.crt");
         
         X509Certificate Endcert = CertificatUtils.generateDefaultEndEntityCert(
-                kpair.getPublic(), priv, caCert, dn, BigInteger.TWO);
+                kpair.getPublic(), priv, caCert, dn, BigInteger.valueOf(2));
         
         CertificatUtils.ExportCertificat(Endcert, "EndCert.crt");
         
